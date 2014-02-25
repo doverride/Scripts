@@ -23,4 +23,3 @@ gst-launch-1.0 -v -e v4l2src device=/dev/video0 ! queue ! \
 # queue ! audioconvert ! faac ! mux.
 
 #EOF
-
