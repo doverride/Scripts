@@ -1,8 +1,9 @@
 #!/bin/sh --
+# -*- Shell -*-
 
 gst-launch-1.0 -v -e v4l2src device=/dev/video0 ! queue ! \
     video/x-h264,width=1280,height=720,framerate=30/1 ! \
-	h264parse ! avdec_h264 ! xvimagesink sync=false
+    h264parse ! avdec_h264 ! xvimagesink sync=false
 
 # step1 raw
 
