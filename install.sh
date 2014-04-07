@@ -312,7 +312,6 @@ auth_use_nsswitch(torbrowsersandbox_client_t)
 logging_send_syslog_msg(torbrowsersandbox_client_t)
 
 allow torbrowsersandbox_client_t self:process setrlimit;
-allow torbrowsersandbox_client_t user_home_t:dir read;
 
 corenet_tcp_bind_tor_port(torbrowsersandbox_client_t)
 corenet_tcp_bind_generic_node(torbrowsersandbox_client_t)
@@ -393,6 +392,10 @@ fi
 if [[ -f "${MATCHED_PATHS[0]}/tor-browser-sandbox" ]]; then
     exit 192
 else
+    if [[ ! -d "${MATCHED_PATHS[0]}" ]]; then
+        /usr/bin/mkdir -p "${MATCHED_PATHS[0]}"
+    fi
+
     /usr/bin/cat > ${MATCHED_PATHS[0]}/tor-browser-sandbox <<EOF
 #!/bin/bash --
 
