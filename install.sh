@@ -336,7 +336,7 @@ EOF
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Browser/profile\.default/preferences -d system_u:object_r:sandbox_file_t:s0:c${SUPPORTED_CATEGORIES[0]},c${SUPPORTED_CATEGORIES[1]}
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Browser/profile\.default/preferences/extension-overrides\.js -- system_u:object_r:usr_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Browser/profile\.default/.* <<none>>
-/opt/tor-browser_$MATCHED_LANGUAGE/Desktop -d <<none>>
+/opt/tor-browser_$MATCHED_LANGUAGE/Desktop(/.*)? <<none>>
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc -- system_u:object_r:tor_browser_sandbox_conf_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc\.orig\.1 -- <<none>>
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc\.tmp -- <<none>>
