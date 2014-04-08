@@ -3,13 +3,12 @@
 
 # 1. gather info and check sanity
 
-# try to do as much as possible here
-
-# - can't be root
+echo -ne 'Checking unconditional commands\r'
+echo -ne '                           (0%)\r'
+echo -ne '\r'
+echo -ne '\r'
 
 [[ $UID -ne 0 ]] || exit 192
-
-# - have all unconditional commands?
 
 [[ -x "/usr/bin/secon" ]] && [[ -x "/usr/bin/sed" ]] && [[ -x "/usr/bin/grep" ]] \
     && [[ -x "/usr/bin/awk" ]] && [[ -x "/usr/bin/id" ]] && [[ -x "/usr/bin/seq" ]] \
@@ -17,9 +16,13 @@
     && [[ -x "/usr/bin/su" ]] && [[ -x "/usr/share/sandbox/sandboxX.sh" ]] && [[ -x "/usr/sbin/setfiles" ]] \
     && [[ -x "/usr/bin/mktemp" ]] && [[ -h "/usr/sbin/restorecon" ]] && [[ -x "/usr/bin/tar" ]] \
     && [[ -x "/usr/bin/rm" ]] && [[ -x "/usr/bin/chmod" ]] && [[ -x "/usr/bin/mkdir" ]] \
-    && [[ -x "/usr/bin/make" ]] && [[ -x "/usr/bin/mv" ]] || exit 192
+    && [[ -x "/usr/bin/make" ]] && [[ -x "/usr/bin/mv" ]] && [[ -x "/usr/bin/sleep" ]] || exit 192
 
-# - support this distro?
+echo -ne 'Checking supported distros\r'
+echo -ne '#                          (1%)\r'
+echo -ne '\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 declare -a SUPPORTED_CPE_NAMES[0]=cpe:/o:fedoraproject:fedora:20
 
@@ -35,7 +38,11 @@ done
 
 [[ -n $MYCPENAME ]] || exit 192
 
-# - support context of user?
+echo -ne 'Checking supported contexts\r'
+echo -ne '##                         (2%)\r'
+echo -ne '\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 declare -a SUPPORTED_ROLE_TYPE_TUPLES[0]=unconfined_r:unconfined_t
 
@@ -49,7 +56,11 @@ done
 
 [[ -n $MYROLETYPETUPLE ]] || exit 192
 
-# - support categories (currently only group of two)
+echo -ne 'Checking supported categories\r'
+echo -ne '###                        (3%)\r'
+echo -ne '\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 declare -a SUPPORTED_CATEGORIES[0]=555
 declare -a SUPPORTED_CATEGORIES[1]=666
@@ -113,7 +124,11 @@ if [[ ${MATCHED_CATEGORIES[*]} != ${SUPPORTED_CATEGORIES[*]} ]]; then
     exit 192
 fi
 
-# - support version available
+echo -ne 'Checking supported versions\r'
+echo -ne '####                       (4%)\r'
+echo -ne '\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 declare TOR_BROWSER_URL=https://www.torproject.org/dist/torbrowser/
 
@@ -136,13 +151,21 @@ done
 
 [[ -n ${MATCHED_TOR_BROWSER_VERSIONS[*]} ]] || return 192
 
-# - support bit length?
+echo -ne 'Checking supported bit lengths\r'
+echo -ne '#####                      (5%)\r'
+echo -ne '\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 declare KERNEL_BIT_LENGTH
 
 KERNEL_BIT_LENGTH=$(/usr/bin/getconf LONG_BIT) || return 192
 
-# - support language
+echo -ne 'Checking supported languages\r'
+echo -ne '######                     (6%)\r'
+echo -ne '\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 declare -a LANGUAGES=()
 
@@ -166,7 +189,10 @@ if [[ -z $MATCHED_LANGUAGE ]]; then
     MATCHED_LANGUAGE=en-US
 fi
 
-# - do integrity check?
+echo -ne 'Checking conditional commands\r'
+echo -ne '######                     (7%)\r'
+echo -ne '\r'
+echo -ne '\r'
 
 declare TOR_BROWSER_INTEGRITY_CHECK=1
 
@@ -174,7 +200,10 @@ if [[ -n $TOR_BROWSER_INTEGRITY_CHECK ]]; then
     [[ -x "/usr/bin/sha256sum" ]] && [[ -x "/usr/bin/gpg2" ]] || exit 192
 fi
 
-# - have workspace
+echo -ne 'Checking work space\r'
+echo -ne '######                     (8%)\r'
+echo -ne '\r'
+echo -ne '\r'
 
 declare WORKSPACE
 
@@ -192,13 +221,20 @@ else
     exit 192
 fi
 
-# - have policy devel
+echo -ne 'Checking make file\r'
+echo -ne '######                     (9%)\r'
+echo -ne '\r'
+echo -ne '\r'
 
 [[ -r "/usr/share/selinux/devel/Makefile" ]] \
     && [[ -r "/usr/share/selinux/devel/include/Makefile" ]] \
     || exit 192
 
-# - determine where to install desktop file and script (*)
+echo -ne 'Checking supported paths\r'
+echo -ne '#######                    (10%)\r'
+echo -ne '\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 if [[ ! -w $HOME/.local/share/applications ]]; then
     exit 192
@@ -229,8 +265,13 @@ done
 
 [[ -n ${MATCHED_PATHS[*]} ]] || exit 192
 
-# 2. gather info and check sanity (needs root)
+echo -ne 'Checking unconditional commands\r'
+echo -ne '#######                   (14%)\r'
+echo -ne '\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
+echo 'Authenticate as root'
 /usr/bin/su -c '[[ $UID -eq 0 ]] \
     && [[ -w "/opt" ]] \
     && [[ -x "/usr/sbin/semodule" ]] \
@@ -238,7 +279,10 @@ done
 
 # 3. do stuff
 
-# - get package
+echo -ne 'Fetching files\r'
+echo -ne '##########                (30%)\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 declare TEMPORARY=$(/usr/bin/mktemp -d $WORKSPACE/mytb-XXXXX )
 
@@ -259,7 +303,10 @@ trap '/usr/bin/rm -rf $TEMPORARY > /dev/null 2>&1' EXIT
     $TOR_BROWSER_URL/${MATCHED_TOR_BROWSER_VERSIONS[0]}/sha256sums.txt-gk.asc \
     -o $TEMPORARY/sha256sums.txt-gk.asc || exit 192
 
-# - optionally check integrity
+echo -ne 'Checking files\r'
+echo -ne '#############             (50%)\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 if [[ -n $TOR_BROWSER_INTEGRITY_CHECK ]]; then
     /usr/bin/gpg2 --homedir $TEMPORARY/.gnupg --keyserver x-hkp://pool.sks-keyservers.net --recv-keys 0x416F061063FEE659 > /dev/null 2>&1 \
@@ -276,15 +323,23 @@ if [[ -n $TOR_BROWSER_INTEGRITY_CHECK ]]; then
     fi
 fi
 
-# - extract package in workdir
+echo -ne 'Exracting archive\r'
+echo -ne '##############            (60%)\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 /usr/bin/tar -xf $TEMPORARY/tor-browser-linux$KERNEL_BIT_LENGTH-${MATCHED_TOR_BROWSER_VERSIONS[0]}_$MATCHED_LANGUAGE.tar.xz -C $TEMPORARY || exit 192
 
-# do we have (sandbox) headers?
+echo -ne 'Checking headers\r'
+echo -ne '#################         (68%)\r'
+echo -ne '\r'
 
 [[ -f "/usr/share/selinux/devel/include/contrib/sandboxX.if" ]] || exit 192
 
-# compile policy module
+echo -ne 'Compiling policy\r'
+echo -ne '###################       (70%)\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 /usr/bin/mkdir $TEMPORARY/module || exit 192
 
@@ -328,7 +383,6 @@ EOF
 /opt/tor-browser_$MATCHED_LANGUAGE/\.cache(/.*)? <<none>>
 /opt/tor-browser_$MATCHED_LANGUAGE/\.config(/.*)? <<none>>
 /opt/tor-browser_$MATCHED_LANGUAGE/\.esd_auth -- <<none>>
-/opt/tor-browser_$MATCHED_LANGUAGE/Browser -d system_u:object_r:sandbox_file_t:s0:c${SUPPORTED_CATEGORIES[0]},c${SUPPORTED_CATEGORIES[1]}
 /opt/tor-browser_$MATCHED_LANGUAGE/Browser/browser/components/libbrowsercomps\.so -- system_u:object_r:lib_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Browser/profile\.default -d system_u:object_r:sandbox_file_t:s0:c${SUPPORTED_CATEGORIES[0]},c${SUPPORTED_CATEGORIES[1]}
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Browser/profile\.default/bookmarks\.html -- system_u:object_r:usr_t:s0
@@ -342,6 +396,7 @@ EOF
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc\.tmp -- <<none>>
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc-defaults -- system_u:object_r:tor_browser_sandbox_conf_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor -d system_u:object_r:sandbox_file_t:s0:c${SUPPORTED_CATEGORIES[0]},c${SUPPORTED_CATEGORIES[1]}
+/opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/geoip -- system_u:object_r:usr_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/.* <<none>>
 /opt/tor-browser_$MATCHED_LANGUAGE/Docs/sources/versions -- system_u:object_r:bin_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/start-tor-browser -- system_u:object_r:bin_t:s0
@@ -374,7 +429,10 @@ EOF
 
 /usr/bin/make -f /usr/share/selinux/devel/Makefile tor-browser-sandbox.pp -C $TEMPORARY/module/ > /dev/null 2>&1
 
-# - install desktop file and script (*)
+echo -ne 'Installing script and launcher\r'
+echo -ne '######################    (90%)\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 if [[ -f "$HOME/.local/share/applications/tor-browser-sandbox.desktop" ]]; then
     exit 192
@@ -426,7 +484,10 @@ EOF
 /usr/bin/chmod +x ${MATCHED_PATHS[0]}/tor-browser-sandbox || exit 192
 fi
 
-# 4. do stuff (needs root)
+echo -ne 'Finalizing installation\r'
+echo -ne '########################  (99%)\r'
+echo -ne '\r'
+/usr/bin/sleep 1
 
 /usr/bin/cat > $TEMPORARY/root <<EOF
 #!/bin/bash --
@@ -448,6 +509,8 @@ fi
 EOF
 
 /usr/bin/chmod +x $TEMPORARY/root
+
+echo 'Authenticate as root'
 /usr/bin/su -c $TEMPORARY/root
 
 #EOF
