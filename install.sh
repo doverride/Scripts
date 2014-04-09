@@ -275,7 +275,7 @@ echo 'Authenticate as root'
 /usr/bin/su -c '[[ $UID -eq 0 ]] \
     && [[ -w "/opt" ]] \
     && [[ -x "/usr/sbin/semodule" ]] \
-    && /usr/sbin/semodule -l | grep ^sandboxX >/dev/null' || exit 192
+    && /usr/sbin/semodule -l | /usr/bin/grep ^sandboxX >/dev/null' || exit 192
 
 # 3. do stuff
 
@@ -391,10 +391,8 @@ EOF
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Browser/profile\.default/preferences/extension-overrides\.js -- system_u:object_r:usr_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Browser/profile\.default/.* <<none>>
 /opt/tor-browser_$MATCHED_LANGUAGE/Desktop(/.*)? <<none>>
-/opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc -- system_u:object_r:tor_browser_sandbox_conf_t:s0
-/opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc\.orig\.1 -- <<none>>
-/opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc\.tmp -- <<none>>
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc-defaults -- system_u:object_r:tor_browser_sandbox_conf_t:s0
+/opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc\.orig\.1 -- system_u:object_r:tor_browser_sandbox_conf_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor -d system_u:object_r:sandbox_file_t:s0:c${SUPPORTED_CATEGORIES[0]},c${SUPPORTED_CATEGORIES[1]}
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/geoip -- system_u:object_r:usr_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/.* <<none>>
@@ -427,7 +425,7 @@ EOF
 /opt/tor-browser_$MATCHED_LANGUAGE/Browser/components/libmozgnome\.so -- system_u:object_r:lib_t:s0
 EOF
 
-/usr/bin/make -f /usr/share/selinux/devel/Makefile tor-browser-sandbox.pp -C $TEMPORARY/module/ > /dev/null 2>&1
+/usr/bin/make -f /usr/share/selinux/devel/Makefile tor-browser-sandbox.pp -C $TEMPORARY/module/ > /dev/null 2>&1 || exit 192
 
 echo -ne 'Installing script and launcher\r'
 echo -ne '######################    (90%)\r'
