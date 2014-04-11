@@ -130,7 +130,9 @@ echo -ne '\r'
 echo -ne '\r'
 /usr/bin/sleep 1
 
-declare TOR_BROWSER_URL=https://www.torproject.org/dist/torbrowser/
+declare -a TOR_BROWSER_URL[0]=https://www.torproject.org/dist/torbrowser/
+declare -a TOR_BROWSER_URL[1]=https://tor.eff.org/dist/torbrowser/
+declare -a TOR_BROWSER_URL[2]=https://www.torservers.net/dist/torbrowser/
 
 declare -a SUPPORTED_TOR_BROWSER_VERSIONS[0]=3.5.3
 declare -a SUPPORTED_TOR_BROWSER_VERSIONS[1]=3.5.4
@@ -138,7 +140,7 @@ declare -a SUPPORTED_TOR_BROWSER_VERSIONS[1]=3.5.4
 declare -a TOR_BROWSER_VERSIONS=()
 declare -a MATCHED_TOR_BROWSER_VERSIONS=()
 
-for version in $(/usr/bin/curl -s "$TOR_BROWSER_URL" | /usr/bin/grep "^<img" | /usr/bin/awk -F "\"" '{ print $6 }' | /usr/bin/cut -d/ -f1); do
+for version in $(/usr/bin/curl -s "${TOR_BROWSER_URL[0]}" | /usr/bin/grep "^<img" | /usr/bin/awk -F "\"" '{ print $6 }' | /usr/bin/cut -d/ -f1); do
     TOR_BROWSER_VERSIONS+=($version)
 done
 
@@ -174,7 +176,7 @@ declare PREFERRED_LANGUAGE=$(printf "%s\n" "$LANG" | /usr/bin/awk -F "." '{ prin
 
 declare MATCHED_LANGUAGE
 
-for language in $(/usr/bin/curl --silent $TOR_BROWSER_URL/${MATCHED_TOR_BROWSER_VERSIONS[0]}/ \
+for language in $(/usr/bin/curl --silent ${TOR_BROWSER_URL[0]}/${MATCHED_TOR_BROWSER_VERSIONS[0]}/ \
     | /usr/bin/grep linux$KERNEL_BIT_LENGTH | /usr/bin/awk -F "\"" '{ print $6 }' \
     | /usr/bin/grep xz$ | /usr/bin/awk -F "_" '{ print $2 }' | /usr/bin/awk -F "." '{ print $1 }'); do
     LANGUAGES+=($language)
@@ -290,18 +292,18 @@ declare TEMPORARY=$(/usr/bin/mktemp -d $WORKSPACE/mytb-XXXXX )
 trap '/usr/bin/rm -rf $TEMPORARY > /dev/null 2>&1' EXIT
 
 /usr/bin/curl --silent\
-    $TOR_BROWSER_URL/${MATCHED_TOR_BROWSER_VERSIONS[0]}/tor-browser-linux$KERNEL_BIT_LENGTH-${MATCHED_TOR_BROWSER_VERSIONS[0]}_$MATCHED_LANGUAGE.tar.xz \
+    ${TOR_BROWSER_URL[0]}/${MATCHED_TOR_BROWSER_VERSIONS[0]}/tor-browser-linux$KERNEL_BIT_LENGTH-${MATCHED_TOR_BROWSER_VERSIONS[0]}_$MATCHED_LANGUAGE.tar.xz \
     -o $TEMPORARY/tor-browser-linux$KERNEL_BIT_LENGTH-${MATCHED_TOR_BROWSER_VERSIONS[0]}_$MATCHED_LANGUAGE.tar.xz || exit 192
 
 [[ -n $TOR_BROWSER_INTEGRITY_CHECK ]] \
     && /usr/bin/curl --silent \
-    $TOR_BROWSER_URL/${MATCHED_TOR_BROWSER_VERSIONS[0]}/tor-browser-linux$KERNEL_BIT_LENGTH-${MATCHED_TOR_BROWSER_VERSIONS[0]}_$MATCHED_LANGUAGE.tar.xz.asc \
+    ${TOR_BROWSER_URL[0]}/${MATCHED_TOR_BROWSER_VERSIONS[0]}/tor-browser-linux$KERNEL_BIT_LENGTH-${MATCHED_TOR_BROWSER_VERSIONS[0]}_$MATCHED_LANGUAGE.tar.xz.asc \
     -o $TEMPORARY/tor-browser-linux$KERNEL_BIT_LENGTH-${MATCHED_TOR_BROWSER_VERSIONS[0]}_$MATCHED_LANGUAGE.tar.xz.asc \
     && /usr/bin/curl --silent \
-    $TOR_BROWSER_URL/${MATCHED_TOR_BROWSER_VERSIONS[0]}/sha256sums.txt \
+    ${TOR_BROWSER_URL[0]}/${MATCHED_TOR_BROWSER_VERSIONS[0]}/sha256sums.txt \
     -o $TEMPORARY/sha256sums.txt \
     && /usr/bin/curl --silent \
-    $TOR_BROWSER_URL/${MATCHED_TOR_BROWSER_VERSIONS[0]}/sha256sums.txt-gk.asc \
+    ${TOR_BROWSER_URL[0]}/${MATCHED_TOR_BROWSER_VERSIONS[0]}/sha256sums.txt-gk.asc \
     -o $TEMPORARY/sha256sums.txt-gk.asc || exit 192
 
 echo -ne 'Checking files\r'
