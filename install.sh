@@ -133,6 +133,7 @@ echo -ne '\r'
 declare TOR_BROWSER_URL=https://www.torproject.org/dist/torbrowser/
 
 declare -a SUPPORTED_TOR_BROWSER_VERSIONS[0]=3.5.3
+declare -a SUPPORTED_TOR_BROWSER_VERSIONS[0]=3.5.4
 
 declare -a TOR_BROWSER_VERSIONS=()
 declare -a MATCHED_TOR_BROWSER_VERSIONS=()
@@ -149,7 +150,7 @@ for torbrowserversion in ${!TOR_BROWSER_VERSIONS[*]}; do
     done
 done
 
-[[ -n ${MATCHED_TOR_BROWSER_VERSIONS[*]} ]] || return 192
+[[ -n ${MATCHED_TOR_BROWSER_VERSIONS[*]} ]] || exit 192
 
 echo -ne 'Checking supported bit lengths\r'
 echo -ne '#####                      (5%)\r'
@@ -159,7 +160,7 @@ echo -ne '\r'
 
 declare KERNEL_BIT_LENGTH
 
-KERNEL_BIT_LENGTH=$(/usr/bin/getconf LONG_BIT) || return 192
+KERNEL_BIT_LENGTH=$(/usr/bin/getconf LONG_BIT) || exit 192
 
 echo -ne 'Checking supported languages\r'
 echo -ne '######                     (6%)\r'
@@ -393,6 +394,7 @@ EOF
 /opt/tor-browser_$MATCHED_LANGUAGE/Desktop(/.*)? <<none>>
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc-defaults -- system_u:object_r:tor_browser_sandbox_conf_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc\.orig\.1 -- system_u:object_r:tor_browser_sandbox_conf_t:s0
+/opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/torrc -- system_u:object_r:tor_browser_sandbox_conf_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor -d system_u:object_r:sandbox_file_t:s0:c${SUPPORTED_CATEGORIES[0]},c${SUPPORTED_CATEGORIES[1]}
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/geoip -- system_u:object_r:usr_t:s0
 /opt/tor-browser_$MATCHED_LANGUAGE/Data/Tor/.* <<none>>
