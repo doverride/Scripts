@@ -133,7 +133,7 @@ echo -ne '\r'
 declare TOR_BROWSER_URL=https://www.torproject.org/dist/torbrowser/
 
 declare -a SUPPORTED_TOR_BROWSER_VERSIONS[0]=3.5.3
-declare -a SUPPORTED_TOR_BROWSER_VERSIONS[0]=3.5.4
+declare -a SUPPORTED_TOR_BROWSER_VERSIONS[1]=3.5.4
 
 declare -a TOR_BROWSER_VERSIONS=()
 declare -a MATCHED_TOR_BROWSER_VERSIONS=()
